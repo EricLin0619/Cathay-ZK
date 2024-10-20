@@ -1,0 +1,38 @@
+.nav_link {
+    position: relative;
+    color: white !important;
+    text-decoration: none;
+    background-color: transparent !important;
+    transition: color 0.3s ease-in-out;
+}
+
+.nav_link:hover,
+.nav_link:active {
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.nav_link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background-color: white;
+    transition: all 0.3s ease-in-out;
+    transform: translateX(-50%);
+}
+
+.active::after {
+    width: 60%;
+}
+
+/* 覆蓋默認的活動狀態樣式 */
+.nav_link:global(.active),
+.nav_link:global(.active:hover),
+.nav_link:global(.active:focus),
+.nav_link:global(.active:active) {
+    color: white !important;
+    background-color: transparent !important;
+}

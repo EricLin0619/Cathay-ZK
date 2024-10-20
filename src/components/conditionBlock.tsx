@@ -27,7 +27,7 @@ export default function ConditionBlock() {
         <div></div>
         {!showAdditional ? (
           <button 
-            className="btn w-[30%] mx-auto h-full bg-white border-none text-3xl custom-shadow2"
+            className="btn w-[30%] mx-auto h-full bg-white border-none text-3xl custom-shadow2 hover:bg-slate-400 text-gray-900"
             onClick={() => setShowAdditional(true)}
           >
             +
