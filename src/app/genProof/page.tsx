@@ -12,7 +12,7 @@ export default function Home() {
 
   return (
     <div className="flex-grow text-black pt-40 pb-6 flex">
-      <div className="w-full h-[70vh] custom-border-radius custom-shadow flex">
+      <div className="w-full h-[70vh] custom-border-radius custom-shadow flex bg-[#FFFAFA] bg-opacity-90">
         <div className="w-[30%] flex flex-col gap-2 p-4 overflow-y-auto">
           <div className="flex-shrink-0">
             {circuits.map((circuit, index) => (

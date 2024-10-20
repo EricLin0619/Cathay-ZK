@@ -29,7 +29,7 @@ export default function ConditionBlock() {
   );
 
   return (
-    <div className="rounded py-8 px-[10%] w-full h-[350px] grid grid-cols-3 gap-6 custom-shadow custom-border-radius">
+    <div className="rounded py-8 px-[10%] w-full h-[350px] grid grid-cols-3 gap-6 custom-shadow custom-border-radius bg-[#FFFAFA] bg-opacity-90">
       <InputBlock />
       <div className="grid grid-rows-3 gap-4">
         <div></div>
