@@ -4,8 +4,8 @@ import LogicSelector from './logicSelector';
 export default function ConditionBlock() {
   const [showAdditional, setShowAdditional] = useState(false);
 
-  const InputBlock = () => (
-    <div className="grid grid-rows-3 gap-4">
+  const InputBlock = ({ onDelete }: { onDelete?: () => void }) => (
+    <div className="grid grid-rows-3 gap-4 relative">
       <input
         type="text"
         placeholder="Type here"
@@ -17,6 +17,14 @@ export default function ConditionBlock() {
         placeholder="Type here"
         className="input input-bordered w-full h-full bg-white text-center custom-shadow2"
       />
+      {onDelete && (
+        <button 
+          className="absolute top-[-10px] right-[-10px] btn btn-circle btn-xs"
+          onClick={onDelete}
+        >
+          ×
+        </button>
+      )}
     </div>
   );
 
@@ -37,7 +45,9 @@ export default function ConditionBlock() {
         )}
         <div></div>
       </div>
-      {showAdditional && <InputBlock />}
+      {showAdditional && (
+        <InputBlock onDelete={() => setShowAdditional(false)} />
+      )}
     </div>
   );
 }
