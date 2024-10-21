@@ -1,6 +1,7 @@
 "use client"
 import "./globals.css";
 import Navbar from "@components/navbar";
+import FlickeringGrid from "@/components/ui/flickering-grid";
 import Particles from "@/components/ui/particles";
 
 export default function RootLayout({
@@ -13,13 +14,23 @@ export default function RootLayout({
       <body className="flex flex-col max-w-[1300px] mx-auto h-dvh pt-4 relative">
       <Navbar />
         {children}
-      <Particles
+        <FlickeringGrid
+        className="-z-10 fixed inset-0"
+        squareSize={3}
+        gridGap={6}
+        color="#60A5FA"
+        maxOpacity={0.5}
+        flickerChance={0.1}
+        height={window.innerHeight}
+        width={window.innerWidth}
+      />
+      {/* <Particles
         className="fixed inset-0 -z-10"
-        quantity={500}
-        ease={100}
+        quantity={600}
+        ease={80}
         color={"#000000"}
         refresh
-      />
+      /> */}
       </body>
     </html>
   );
