@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ComparatorSelector from './comparatorSelector';
 import LogicSelector from './logicSelector';
 
 export default function ConditionBlock() {
@@ -11,7 +12,7 @@ export default function ConditionBlock() {
         placeholder="Type here"
         className="input input-bordered w-full h-full bg-white text-center custom-shadow2"
       />
-      <LogicSelector />
+      <ComparatorSelector />
       <input
         type="text"
         placeholder="Type here"
