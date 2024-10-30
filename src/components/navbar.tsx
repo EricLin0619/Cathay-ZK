@@ -28,7 +28,7 @@ export default function Navbar() {
   }, []);
 
   return (
-    <div className={`navbar bg-slate-500 custom-border-radius custom-shadow fixed top-4 left-0 right-0 h-18 z-50 max-w-[1300px] mx-auto transition-all duration-300 ${isScrolled ? 'bg-opacity-70 backdrop-blur-md' : ''}`}>
+    <div className={` max-w-[80vw] navbar bg-slate-500 custom-border-radius custom-shadow fixed top-4 left-0 right-0 h-18 z-50 mx-auto transition-all duration-300 ${isScrolled ? 'bg-opacity-70 backdrop-blur-md' : ''}`}>
       <div className="navbar-start">
         {/* <a className="btn btn-ghost text-2xl">daisyUI</a> */}
       </div>

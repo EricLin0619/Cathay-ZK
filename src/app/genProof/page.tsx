@@ -31,10 +31,10 @@ export default function Home() {
             ))}
           </div>
         </div>
-        <div className="flex-grow border-l-4 border-slate-300 px-10 py-6 overflow-y-auto flex flex-col">
+        <div className="w-[70%] border-l-4 border-slate-300 px-10 py-6 flex flex-col">
           {selectedCircuitData ? (
             <>
-              <div>
+              <div className="w-full">
                 <h2 className="text-4xl font-bold mb-6">
                   {selectedCircuitData.name}
                 </h2>
@@ -49,7 +49,7 @@ export default function Home() {
                   ))}
                 </ul>
               </div>
-              <div className="mt-auto flex flex-col gap-4 mb-4">
+              <div className=" w-full mt-auto flex flex-col gap-4 mb-4">
                 {selectedCircuitData.conditions.map((condition, index) => (
                   <input
                     key={index}

@@ -20,7 +20,7 @@ const circuits = [
   {
     id: 3,
     name: "circuit 3",
-    description: "Consectetur adipisicing elit. Quasi distinctio, molestias aut sequi non ex autem!",
+    description: "Consectetur adipisicing elit. Quasi distinctio, molestias aut sequi non ex autem! ui non ex  ui non ex  ui non ex ",
     conditions: [
       { name: "education_level", logic: ">=", value: "bachelor" },
       { name: "work_experience", logic: ">=", value: 5 }

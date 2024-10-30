@@ -11,12 +11,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="flex flex-col max-w-[1300px] mx-auto h-dvh pt-4 relative">
+      <body className="flex flex-col max-w-[80vw]  mx-auto h-dvh pt-4 relative">
       <Navbar />
         {children}
         <FlickeringGrid
-        className="-z-10 fixed inset-0"
-        squareSize={3}
+        className="-z-10 fixed inset-0 w-full h-full"
+        squareSize={4}
         gridGap={6}
         color="#60A5FA"
         maxOpacity={0.5}

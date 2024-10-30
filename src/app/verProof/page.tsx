@@ -31,7 +31,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-        <div className="flex-grow border-l-4 border-slate-300 px-10 py-6 overflow-y-auto flex flex-col">
+        <div className="w-[70%] border-l-4 border-slate-300 px-10 py-6 overflow-y-auto flex flex-col">
           {selectedCircuitData ? (
             <>
               <div>
