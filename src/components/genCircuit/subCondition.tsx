@@ -1,3 +1,5 @@
+import { useRef } from "react";
+
 interface SubConditionProps {
   deletable: boolean;
   setShowAdditional: (show: boolean) => void;
@@ -22,9 +24,15 @@ export default function SubCondition({
   deletable,
   setShowAdditional,
 }: SubConditionProps) {
+
+  
+  const inputRef = useRef(null)
+  console.log(inputRef.current);
+  
   return (
     <div className="grid grid-rows-3 gap-4 relative">
       <input
+        ref={inputRef}
         type="text"
         placeholder="Type here"
         className="input input-bordered w-full h-full bg-white text-center custom-shadow2"
