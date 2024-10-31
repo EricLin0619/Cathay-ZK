@@ -11,7 +11,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="flex flex-col max-w-[80vw]  mx-auto h-dvh pt-4 relative">
+      <body className="flex flex-col max-w-[80vw] mx-auto h-dvh pt-4 relative">
       <Navbar />
         {children}
         <FlickeringGrid

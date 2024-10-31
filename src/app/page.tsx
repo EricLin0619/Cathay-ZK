@@ -2,7 +2,7 @@
 import { configureStore } from "@reduxjs/toolkit"
 import { Provider } from "react-redux";
 import userReducer from "../store/userSlice"
-import CreateCircuit from "@components/createCircuit"
+import CreateCircuit from "@components/genCircuit/createCircuit"
 const store = configureStore({
   reducer: {
     user: userReducer,
