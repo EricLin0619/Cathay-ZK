@@ -7,7 +7,7 @@ interface SubConditionProps {
 
 const ComparatorSelector = () => {
   return (
-    <select className="select select-bordered w-[30%] h-full bg-white text-center mx-auto custom-shadow2">
+    <select className="select select-bordered w-[40%] h-full bg-white text-center mx-auto custom-shadow2">
       <option disabled selected>
         comparator
       </option>

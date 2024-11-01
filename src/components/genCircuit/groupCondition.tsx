@@ -13,7 +13,7 @@ const AddSubCondition = ({ addSubCondition }: AddSubConditionProps) => {
         onClick={() => {
           addSubCondition(true);
         }}
-        className="btn w-[30%] mx-auto h-full bg-white border-none text-3xl custom-shadow2 hover:bg-slate-400 text-gray-900"
+        className="btn w-[40%] mx-auto h-full bg-white border-none text-3xl custom-shadow2 hover:bg-slate-400 text-gray-900"
       >
         +
       </button>
@@ -26,7 +26,7 @@ const LogicOperator = () => {
   return (
     <div className="grid grid-rows-3 gap-4">
       <div></div>
-      <select className="select select-bordered w-[30%] h-full bg-white text-center mx-auto custom-shadow2">
+      <select className="select select-bordered w-[40%] h-full bg-white text-center mx-auto custom-shadow2">
         <option disabled selected>
           logic operator
         </option>

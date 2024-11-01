@@ -1,6 +1,5 @@
 import GroupCondition from "./groupCondition";
 import CreateButton from "@components/button/createButton";
-import { div } from "framer-motion/client";
 import { useState } from "react";
 
 // 定義介面
