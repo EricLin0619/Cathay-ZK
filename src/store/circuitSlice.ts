@@ -24,26 +24,7 @@ export interface RootState {
 const initialState = {
   circuitName: "",
   circuitDescription: "",
-  groupCondition_1: {
-    operator: "",
-    condition: [{
-        name: "",
-        logic: "",
-        value: ""
-    }]
-  },
-  condition: [
-    {
-        logic: "",
-        conditions: [
-            {
-                name: "",
-                logic: "",
-                value: ""
-            }
-        ]
-    }
-  ]
+  groupConditions: []
 }
 const circuitSlice = createSlice({
   name: "circuit",
@@ -55,11 +36,12 @@ const circuitSlice = createSlice({
     setCircuitDescription: (state, action: PayloadAction<string>) => {
       state.circuitDescription = action.payload;
     },
-    setCondition: (state, action: PayloadAction<GroupCondition[]>) => {
-      state.condition = action.payload;
+    setGroupCondition: (state, action: PayloadAction<GroupCondition>) => {
+      // @ts-ignore
+      state.groupConditions = [...state.groupConditions, action.payload];
     }
   },
 });
 
-export const { setCircuitName, setCircuitDescription, setCondition} = circuitSlice.actions;
+export const { setCircuitName, setCircuitDescription, setGroupCondition} = circuitSlice.actions;
 export default circuitSlice.reducer;

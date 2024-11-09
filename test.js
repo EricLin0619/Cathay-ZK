@@ -127,7 +127,7 @@ function generateCircomCode(circuit) {
       code += `    ${compName}.in[0] <== ${condition.name};\n`;
       code += `    ${compName}.in[1] <== ${condition.value};\n`;
     } else if (condition.logic === "<=") {
-      code += `    component ${compName} = LessEqThan(32);\n`;
+      code += `    component ${compName} = LessThanOrEqual(32);\n`;
       code += `    ${compName}.in[0] <== ${condition.name};\n`;
       code += `    ${compName}.in[1] <== ${condition.value};\n`;
     }

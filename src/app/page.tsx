@@ -1,11 +1,11 @@
 "use client"
 import { configureStore } from "@reduxjs/toolkit"
 import { Provider } from "react-redux";
-import userReducer from "../store/userSlice"
 import CreateCircuit from "@components/genCircuit/createCircuit"
+import CircuitReducer from "../store/circuitSlice"
 const store = configureStore({
   reducer: {
-    user: userReducer,
+    circuit: CircuitReducer,
   },
 });
 
