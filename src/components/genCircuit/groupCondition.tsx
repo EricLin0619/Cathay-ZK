@@ -65,27 +65,24 @@ interface AddSubConditionProps {
 
 const AddSubCondition = ({ addSubCondition }: AddSubConditionProps) => {
   return (
-    <div className="grid grid-rows-3 gap-4">
-      <div></div>
+    <div className="flex items-center justify-center w-full h-full">
       <button
         onClick={() => {
           addSubCondition(true);
         }}
-        className="btn w-[40%] mx-auto h-full bg-white border-none text-3xl custom-shadow2 hover:bg-slate-400 text-gray-900"
+        className="w-20 h-20 btn mx-auto bg-white border-none text-3xl custom-shadow2 hover:bg-slate-400 text-gray-900"
       >
         +
       </button>
-      <div></div>
     </div>
   );
 };
 
 const LogicOperator = ({ setLogic }: { setLogic: (logic: string) => void }) => {
   return (
-    <div className="grid grid-rows-3 gap-4">
-      <div></div>
+    <div className="flex items-center justify-center">
       <select
-        className="select select-bordered w-[40%] h-full bg-white text-center mx-auto custom-shadow2"
+        className="select select-bordered bg-white text-center mx-auto custom-shadow2"
         onChange={(e) => setLogic(e.target.value)}
       >
         <option disabled selected>
@@ -94,7 +91,6 @@ const LogicOperator = ({ setLogic }: { setLogic: (logic: string) => void }) => {
         <option>AND</option>
         <option>OR</option>
       </select>
-      <div></div>
     </div>
   );
 };

@@ -114,7 +114,7 @@ interface GroupConditionDisplay {
 
 const LogicOperator = ({setLogicOperator}: {setLogicOperator: (logicOperator: string) => void}) => {
   return (
-    <select className="select select-bordered h-[100px] w-[100px] bg-white text-center mx-auto custom-shadow2"
+    <select className="select select-bordered h-20 w-20 bg-white text-center mx-auto custom-shadow2"
       onChange={(e) => setLogicOperator(e.target.value)}
     >
       <option disabled selected>Logic Operator</option>
@@ -135,7 +135,7 @@ const AddGroupCondition = ({
       onClick={() => {
         addGroupCondition();
       }}
-      className="btn h-[100px] w-[100px] mx-auto bg-white border-none text-3xl custom-shadow2 hover:bg-slate-400 text-gray-900"
+      className="btn h-20 w-20 mx-auto bg-white border-none text-3xl custom-shadow2 hover:bg-slate-400 text-gray-900"
     >
       +
     </button>
