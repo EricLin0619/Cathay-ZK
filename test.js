@@ -1,5 +1,4 @@
 const circuits = {
-  id: 1,
   name: "circuit 1",
   description: "Complex three-layer logic circuit example",
   logic: {
@@ -9,6 +8,7 @@ const circuits = {
             operator: "or",
             conditions: [
               { name: "credit_score", logic: ">", value: 700 },
+              { name: "", logic: "", value: "" },
             ],
           },
           {

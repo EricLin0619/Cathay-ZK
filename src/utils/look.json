@@ -1,0 +1,59 @@
+{
+    "name": "asdf",
+    "description": "asdf",
+    "logic": {
+        "operator": "and",
+        "conditions": [
+            {
+                "operator": "or",
+                "conditions": [
+                    {
+                        "operator": "and",
+                        "conditions": [
+                            {
+                                "name": "asdf",
+                                "logic": ">=",
+                                "value": "asdf"
+                            },
+                            {
+                                "name": "asdf",
+                                "logic": ">=",
+                                "value": "asdf"
+                            }
+                        ]
+                    },
+                    {
+                        "operator": "",
+                        "conditions": [
+                            {
+                                "name": "",
+                                "logic": "",
+                                "value": ""
+                            },
+                            {
+                                "name": "",
+                                "logic": "",
+                                "value": ""
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "operator": "",
+                "conditions": [
+                    {
+                        "name": "",
+                        "logic": "",
+                        "value": ""
+                    },
+                    {
+                        "name": "",
+                        "logic": "",
+                        "value": ""
+                    }
+                ]
+            }
+        ]
+    }
+}

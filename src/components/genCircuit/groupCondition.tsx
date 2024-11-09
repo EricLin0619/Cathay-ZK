@@ -70,7 +70,7 @@ const AddSubCondition = ({ addSubCondition }: AddSubConditionProps) => {
         onClick={() => {
           addSubCondition(true);
         }}
-        className="w-20 h-20 btn mx-auto bg-white border-none text-3xl custom-shadow2 hover:bg-slate-400 text-gray-900"
+        className="w-20 h-20 btn mx-auto bg-white border-none text-3xl custom-shadow2 hover:bg-slate-500 hover:text-white text-gray-900"
       >
         +
       </button>

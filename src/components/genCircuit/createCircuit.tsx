@@ -1,26 +1,36 @@
 import GroupCondition from "./groupCondition";
 import { useState, useEffect, Fragment } from "react";
-import { useDispatch } from "react-redux";
-import { setCircuitName, setCircuitDescription } from "@/store/circuitSlice";
 import { GroupConditions } from "@/interfaces/circuit";
+import { genCircuitData } from "@/utils/genCircuitData";
+import genCircomCode from "@/utils/genCircomCode";
 
 export default function CreateCircuit() {
-  const [groupConditionDisplay, setGroupConditionDisplay] = useState<GroupConditionDisplay[]>([
-    { id: 1, number: 1 },
-  ]);
+  const [groupConditionDisplay, setGroupConditionDisplay] = useState<
+    GroupConditionDisplay[]
+  >([{ id: 1, number: 1 }]);
 
   const [circuitName, setCircuitName] = useState("");
   const [circuitDescription, setCircuitDescription] = useState("");
-  const [groupCondition_1, setGroupCondition_1] = useState<GroupConditions | undefined>();
-  const [groupCondition_2, setGroupCondition_2] = useState<GroupConditions | undefined>();
-  const [groupCondition_3, setGroupCondition_3] = useState<GroupConditions | undefined>();
+  const [groupCondition_1, setGroupCondition_1] = useState<
+    GroupConditions | undefined
+  >();
+  const [groupCondition_2, setGroupCondition_2] = useState<
+    GroupConditions | undefined
+  >();
+  const [groupCondition_3, setGroupCondition_3] = useState<
+    GroupConditions | undefined
+  >();
   const [logicOperator_1, setLogicOperator_1] = useState<string>("");
   const [logicOperator_2, setLogicOperator_2] = useState<string>("");
 
   useEffect(() => {
     console.log(groupCondition_1, groupCondition_2, groupCondition_3);
-    console.log(logicOperator_1, logicOperator_2)
+    console.log(logicOperator_1, logicOperator_2);
   }, [groupCondition_1, groupCondition_2, groupCondition_3]);
+
+  useEffect(() => {
+    console.log(logicOperator_1, logicOperator_2);
+  }, [logicOperator_1, logicOperator_2]);
 
   const addGroupCondition = () => {
     const newId = Date.now(); // use timestamp as unique id
@@ -34,7 +44,9 @@ export default function CreateCircuit() {
   };
 
   const removeGroupCondition = (index: number) => {
-    setGroupConditionDisplay(groupConditionDisplay.filter((_, i) => i !== index));
+    setGroupConditionDisplay(
+      groupConditionDisplay.filter((_, i) => i !== index)
+    );
   };
 
   return (
@@ -44,10 +56,12 @@ export default function CreateCircuit() {
         <div className="space-y-6">
           {/* Circuit Name 區塊 */}
           <div>
-            <p className="text-2xl font-bold mb-3 text-gray-800">Circuit Name</p>
-            <input 
-              type="text" 
-              placeholder="Enter circuit name" 
+            <p className="text-2xl font-bold mb-3 text-gray-800">
+              Circuit Name
+            </p>
+            <input
+              type="text"
+              placeholder="Enter circuit name"
               className="input input-bordered w-full bg-white custom-shadow2 focus:outline-none focus:border-blue-400"
               value={circuitName}
               onChange={(e) => setCircuitName(e.target.value)}
@@ -56,10 +70,12 @@ export default function CreateCircuit() {
 
           {/* Circuit Description 區塊 */}
           <div>
-            <p className="text-2xl font-bold mb-3 text-gray-800">Circuit Description</p>
-            <input 
-              type="text" 
-              placeholder="Enter circuit description" 
+            <p className="text-2xl font-bold mb-3 text-gray-800">
+              Circuit Description
+            </p>
+            <input
+              type="text"
+              placeholder="Enter circuit description"
               className="input input-bordered w-full bg-white custom-shadow2 focus:outline-none focus:border-blue-400"
               value={circuitDescription}
               onChange={(e) => setCircuitDescription(e.target.value)}
@@ -70,7 +86,9 @@ export default function CreateCircuit() {
 
       {/* Condition 區塊 */}
       <div className="bg-[#FFFAFA] p-8 rounded-lg custom-shadow custom-border-radius">
-        <p className="text-2xl font-bold mb-6 text-gray-800">Circuit Condition</p>
+        <p className="text-2xl font-bold mb-6 text-gray-800">
+          Circuit Condition
+        </p>
         <div className="flex flex-col gap-8">
           {groupConditionDisplay.map((condition, index) => (
             <Fragment key={condition.id}>
@@ -78,18 +96,25 @@ export default function CreateCircuit() {
                 index={index}
                 removeGroupCondition={removeGroupCondition}
                 setGroupCondition={
-                  index === 0 ? setGroupCondition_1 :
-                  index === 1 ? setGroupCondition_2 :
-                  setGroupCondition_3
+                  index === 0
+                    ? setGroupCondition_1
+                    : index === 1
+                    ? setGroupCondition_2
+                    : setGroupCondition_3
                 }
               />
-              {groupConditionDisplay.length > 1 && index !== groupConditionDisplay.length - 1 && (
-                <LogicOperator setLogicOperator={
-                  index === 0 ? setLogicOperator_1 :
-                  index === 1 ? setLogicOperator_2 :
-                  () => {}
-                }/>
-              )}
+              {groupConditionDisplay.length > 1 &&
+                index !== groupConditionDisplay.length - 1 && (
+                  <LogicOperator
+                    setLogicOperator={
+                      index === 0
+                        ? setLogicOperator_1
+                        : index === 1
+                        ? setLogicOperator_2
+                        : () => {}
+                    }
+                  />
+                )}
             </Fragment>
           ))}
           {groupConditionDisplay.length < 3 && (
@@ -100,7 +125,26 @@ export default function CreateCircuit() {
 
       {/* Create Button */}
       <div className="mt-8 w-full">
-        <button className="btn w-full bg-white custom-shadow2 hover:bg-slate-500 hover:text-white text-gray-900 border-none">Create</button>
+        <button
+          onClick={() => {
+            const result = genCircuitData(
+              circuitName,
+              circuitDescription,
+              groupCondition_1,
+              groupCondition_2,
+              groupCondition_3,
+              "or",
+              logicOperator_2
+            )
+            console.log(result);
+            // @ts-ignore
+            const generatedCircom = genCircomCode(result);
+            console.log(generatedCircom);
+          }}
+          className="btn w-full bg-white custom-shadow2 hover:bg-slate-500 hover:text-white text-gray-900 border-none"
+        >
+          Create
+        </button>
       </div>
     </div>
   );
@@ -112,17 +156,24 @@ interface GroupConditionDisplay {
   number: number;
 }
 
-const LogicOperator = ({setLogicOperator}: {setLogicOperator: (logicOperator: string) => void}) => {
+const LogicOperator = ({
+  setLogicOperator,
+}: {
+  setLogicOperator: (logicOperator: string) => void;
+}) => {
   return (
-    <select className="select select-bordered h-20 w-20 bg-white text-center mx-auto custom-shadow2"
+    <select
+      className="select select-bordered h-20 w-20 bg-white text-center mx-auto custom-shadow2"
       onChange={(e) => setLogicOperator(e.target.value)}
     >
-      <option disabled selected>Logic Operator</option>
+      <option disabled selected>
+        Logic Operator
+      </option>
       <option>AND</option>
       <option>OR</option>
     </select>
   );
-}
+};
 
 // add new group condition button
 const AddGroupCondition = ({
@@ -135,9 +186,11 @@ const AddGroupCondition = ({
       onClick={() => {
         addGroupCondition();
       }}
-      className="btn h-20 w-20 mx-auto bg-white border-none text-3xl custom-shadow2 hover:bg-slate-400 text-gray-900"
+      className="btn h-20 w-20 mx-auto bg-white border-none text-3xl custom-shadow2 hover:bg-slate-500 hover:text-white text-gray-900"
     >
       +
     </button>
   );
 };
+
+
