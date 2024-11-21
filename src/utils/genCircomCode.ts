@@ -138,24 +138,36 @@ function generateComparison(condition: Condition, varCounter: VarCounter): Compa
   let code = `    // 比較 ${condition.name} ${condition.logic} ${condition.value}\n`;
   code += `    signal ${outVar};\n`;
   
-  if (condition.logic === "==" || condition.logic === "===") {
+  if (condition.logic === "=(number)" || condition.logic === "===") {
     code += `    component ${compName} = IsEqual();\n`;
     code += `    ${compName}.in[0] <== ${condition.name};\n`;
     code += `    ${compName}.in[1] <== ${condition.value};\n`;
-  } else if (condition.logic === ">") {
+  } else if (condition.logic === "!=(number)" || condition.logic === "!==") {
+    code += `    component ${compName} = IsNotEqual();\n`;
+    code += `    ${compName}.in[0] <== ${condition.name};\n`;
+    code += `    ${compName}.in[1] <== ${condition.value};\n`;
+  } else if (condition.logic === ">(number)") {
     code += `    component ${compName} = GreaterThan(32);\n`;
     code += `    ${compName}.in[0] <== ${condition.name};\n`;
     code += `    ${compName}.in[1] <== ${condition.value};\n`;
-  } else if (condition.logic === ">=") {
+  } else if (condition.logic === ">=(number)") {
     code += `    component ${compName} = GreaterEqThan(32);\n`;
     code += `    ${compName}.in[0] <== ${condition.name};\n`;
     code += `    ${compName}.in[1] <== ${condition.value};\n`;
-  } else if (condition.logic === "<") {
+  } else if (condition.logic === "<(number)") {
     code += `    component ${compName} = LessThan(32);\n`;
     code += `    ${compName}.in[0] <== ${condition.name};\n`;
     code += `    ${compName}.in[1] <== ${condition.value};\n`;
-  } else if (condition.logic === "<=") {
+  } else if (condition.logic === "<=(number)") {
     code += `    component ${compName} = LessEqThan(32);\n`;
+    code += `    ${compName}.in[0] <== ${condition.name};\n`;
+    code += `    ${compName}.in[1] <== ${condition.value};\n`;
+  } else if (condition.logic === "==(string)") {
+    code += `    component ${compName} = IsEqualString();\n`;
+    code += `    ${compName}.in[0] <== ${condition.name};\n`;
+    code += `    ${compName}.in[1] <== ${condition.value};\n`;
+  } else if (condition.logic === "==(bool)") {
+    code += `    component ${compName} = IsEqual();\n`;
     code += `    ${compName}.in[0] <== ${condition.name};\n`;
     code += `    ${compName}.in[1] <== ${condition.value};\n`;
   }

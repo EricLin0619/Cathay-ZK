@@ -11,15 +11,9 @@ export default function CreateCircuit() {
 
   const [circuitName, setCircuitName] = useState("");
   const [circuitDescription, setCircuitDescription] = useState("");
-  const [groupCondition_1, setGroupCondition_1] = useState<
-    GroupConditions | undefined
-  >();
-  const [groupCondition_2, setGroupCondition_2] = useState<
-    GroupConditions | undefined
-  >();
-  const [groupCondition_3, setGroupCondition_3] = useState<
-    GroupConditions | undefined
-  >();
+  const [groupCondition_1, setGroupCondition_1] = useState<GroupConditions | undefined>();
+  const [groupCondition_2, setGroupCondition_2] = useState<GroupConditions | undefined>();
+  const [groupCondition_3, setGroupCondition_3] = useState<GroupConditions | undefined>();
   const [logicOperator_1, setLogicOperator_1] = useState<string>("");
   const [logicOperator_2, setLogicOperator_2] = useState<string>("");
 
@@ -163,7 +157,7 @@ const LogicOperator = ({
 }) => {
   return (
     <select
-      className="select select-bordered h-20 w-20 bg-white text-center mx-auto custom-shadow2"
+      className="select select-bordered bg-white text-center mx-auto custom-shadow2"
       onChange={(e) => setLogicOperator(e.target.value)}
     >
       <option disabled selected>

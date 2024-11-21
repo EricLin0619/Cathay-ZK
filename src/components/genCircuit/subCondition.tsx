@@ -63,11 +63,14 @@ const ComparatorSelector = ({setComparator}: {setComparator: (comparator: string
       <option disabled selected>
         comparator
       </option>
-      <option>{`>`}</option>
-      <option>{`>=`}</option>
-      <option>{`<`}</option>
-      <option>{`<=`}</option>
-      <option>{`==`}</option>
+      <option>{`=(number)`}</option>
+      <option>{`!=(number)`}</option>
+      <option>{`>(number)`}</option>
+      <option>{`>=(number)`}</option>
+      <option>{`<(number)`}</option>
+      <option>{`<=(number)`}</option>
+      <option>{`==(string)`}</option>
+      <option>{`==(bool)`}</option>
     </select>
   );
 };
