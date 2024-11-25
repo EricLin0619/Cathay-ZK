@@ -1,22 +1,55 @@
 const circuits = {
+  id: 1,
   name: "circuit 1",
-  description: "Complex three-layer logic circuit example",
+  description: "Complex four-layer logic circuit example",
   logic: {
+    // 最外層 or：結合第四步和第五步
     operator: "or",
     conditions: [
+      {
+        // 最外層第二個 or：結合第三步和第四步
+        operator: "or",
+        conditions: [
           {
-            operator: "or",
+            // 第三步：(a or b) and (c or d)
+            operator: "and",
             conditions: [
-              { name: "credit_score", logic: ">", value: 700 },
-              { name: "", logic: "", value: "" },
+              {
+                // 第一步：(a or b)
+                operator: "or",
+                conditions: [
+                  { name: "a", logic: ">=", value: 100 },
+                  { name: "b", logic: ">", value: 200 },
+                ],
+              },
+              {
+                // 第二步：(c or d)
+                operator: "or",
+                conditions: [
+                  { name: "c", logic: ">", value: 300 },
+                  { name: "d", logic: "=", value: 400 },
+                ],
+              },
             ],
           },
           {
-            operator: "or",
+            // 第四步：(e and f)
+            operator: "and",
             conditions: [
-              { name: "age", logic: ">", value: 18 },
+              { name: "e", logic: ">=", value: 500 },
+              { name: "f", logic: ">=", value: 600 },
             ],
           },
+        ],
+      },
+      {
+        // 第五步：(g or h)
+        operator: "or",
+        conditions: [
+          { name: "g", logic: ">", value: 700 },
+          { name: "h", logic: "=", value: 800 },
+        ],
+      },
     ],
   },
 };

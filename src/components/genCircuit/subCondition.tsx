@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Condition } from "../../interfaces/circuit";
-import { CodeSandboxLogoIcon } from "@radix-ui/react-icons";
 
 // main component
 export default function SubCondition({

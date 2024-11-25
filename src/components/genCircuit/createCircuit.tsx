@@ -127,13 +127,14 @@ export default function CreateCircuit() {
               groupCondition_1,
               groupCondition_2,
               groupCondition_3,
-              "or",
+              logicOperator_1,
               logicOperator_2
             )
-            console.log(result);
+            console.log(result.logic);
             // @ts-ignore
             const generatedCircom = genCircomCode(result);
-            console.log(generatedCircom);
+            console.log("---------------------------------------------");
+            console.log(Buffer.from(generatedCircom, "utf-8").toString("hex"));
           }}
           className="btn w-full bg-white custom-shadow2 hover:bg-slate-500 hover:text-white text-gray-900 border-none"
         >
