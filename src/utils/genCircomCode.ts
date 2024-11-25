@@ -62,7 +62,7 @@ const circuits: Circuit = {
 };
 
 function generateCircomCode(circuit: Circuit): string {
-  let code = `pragma circom 2.0.0;\ninclude "node_modules/circomlib/circuits/comparators.circom";\n\n`;
+  let code = `pragma circom 2.0.0;\ninclude "/Users/eric/programming/typescript/zk_backend/node_modules/circomlib/circuits/comparators.circom";\n\n`;
   
   code += `template ${circuit.name.replace(/\s+/g, '')} () {\n`;
   
