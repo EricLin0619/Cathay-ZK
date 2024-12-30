@@ -100,8 +100,17 @@ function processLogicGroup(logic: LogicGroup, varCounter: VarCounter): LogicProc
     return { code: '', finalVar: '0' };
   }
   
-  if (logic.conditions.every(c => 'name' in c)) {
-    const results = logic.conditions.map(condition => {
+  // 過濾掉空白的條件
+  const validConditions = logic.conditions.filter(c => 
+    !('name' in c) || (c as Condition).name !== ''
+  );
+  
+  if (validConditions.length === 0) {
+    return { code: '', finalVar: '0' };
+  }
+  
+  if (validConditions.every(c => 'name' in c)) {
+    const results = validConditions.map(condition => {
       const { code: compCode, outVar } = generateComparison(condition as Condition, varCounter);
       code += compCode;
       return outVar;
@@ -113,7 +122,7 @@ function processLogicGroup(logic: LogicGroup, varCounter: VarCounter): LogicProc
   }
   
   const subResults: string[] = [];
-  for (const condition of logic.conditions) {
+  for (const condition of validConditions) {
     if ('name' in condition) {
       const { code: compCode, outVar } = generateComparison(condition as Condition, varCounter);
       code += compCode;
@@ -121,8 +130,14 @@ function processLogicGroup(logic: LogicGroup, varCounter: VarCounter): LogicProc
     } else {
       const { code: subCode, finalVar } = processLogicGroup(condition as LogicGroup, varCounter);
       code += subCode;
-      subResults.push(finalVar);
+      if (finalVar !== '0') {  // 只有當子群組有有效結果時才加入
+        subResults.push(finalVar);
+      }
     }
+  }
+  
+  if (subResults.length === 0) {
+    return { code: '', finalVar: '0' };
   }
   
   const finalVar = `intermediate${varCounter.intermediate++}`;
