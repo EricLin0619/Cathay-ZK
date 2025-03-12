@@ -3,6 +3,8 @@ import { useState, useEffect, Fragment } from "react";
 import { GroupConditions } from "@/interfaces/circuit";
 import { genCircuitData } from "@/utils/genCircuitData";
 import genCircomCode from "@/utils/genCircomCode";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function CreateCircuit() {
   const [groupConditionDisplay, setGroupConditionDisplay] = useState<
@@ -131,10 +133,30 @@ export default function CreateCircuit() {
               logicOperator_2
             )
             console.log(result.logic);
+
+            
             // @ts-ignore
             const generatedCircom = genCircomCode(result);
             console.log("---------------------------------------------");
+            const hexString = Buffer.from(generatedCircom, "utf-8").toString("hex")
             console.log(Buffer.from(generatedCircom, "utf-8").toString("hex"));
+
+            const payload = {
+              name: circuitName,
+              description: circuitDescription,
+              circomHexString: hexString,
+              circuitLogic: result.logic
+            }
+            console.log("Payload:", payload)
+            axios.post("http://localhost:3001/circuit", payload)
+            .then(response => {
+              console.log("Response data:", response.data)
+              toast.success("Circuit generated successfully")
+            })
+            .catch(error => {
+              console.log('Error posting data:', error)
+              toast.error("Failed to generate circuit")
+            })
           }}
           className="btn w-full bg-white custom-shadow2 hover:bg-slate-500 hover:text-white text-gray-900 border-none"
         >

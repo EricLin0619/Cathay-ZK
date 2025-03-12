@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "@components/navbar";
 import FlickeringGrid from "@/components/ui/flickering-grid";
 import Particles from "@/components/ui/particles";
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function RootLayout({
   children,
@@ -12,6 +13,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="flex flex-col max-w-[80vw] mx-auto h-dvh pt-4 relative">
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          duration: 3000, // 持续时间，单位为毫秒（这里设置为3秒）
+        }}
+      />
       <Navbar />
         {children}
         <FlickeringGrid
