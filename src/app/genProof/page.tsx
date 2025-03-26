@@ -16,7 +16,8 @@ export default function Home() {
     axios.get("http://localhost:3001/circuit")
     .then(response => {
       console.log(response.data)
-       setCircuits(response.data)
+      setCircuits(response.data)
+      console.log(extractFields(parseCondition(response.data[0].circuit_logic)))
     })
   },[])
 
@@ -41,9 +42,23 @@ export default function Home() {
 
   const handleGen = () => {
     const numberInputs = Object.entries(inputValues).reduce((acc, [key, value]) => {
-      acc[key.trim()] = Number(value);
+      // 解析字段名和類型
+      const [fieldName, type] = key.split(' (');
+      const fieldType = type?.replace(')', '');  // 移除結尾括號
+
+      // 根據類型轉換值
+      let convertedValue = value as string | number;
+      if (fieldType === 'number') {
+        convertedValue = Number(value);
+      } else if (fieldType === 'bool') {
+        convertedValue = value === '1' || value === '1' ? 1 : 0;
+      }
+      // string 類型保持原樣
+
+      acc[fieldName.trim()] = convertedValue;
       return acc;
-    }, {} as { [key: string]: number });
+    }, {} as { [key: string]: string | number | boolean });
+    console.log(numberInputs)
 
     axios.post(`http://localhost:3001/circuit/get-proof/${selectedCircuit}`, {
       inputs: numberInputs

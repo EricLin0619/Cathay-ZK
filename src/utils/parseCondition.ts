@@ -36,18 +36,35 @@ export function parseCondition(condition: ConditionGroup | Condition): string {
 }
 
 export function extractFields(expression: string): string[] {
-  // 使用正则表达式匹配字段名
-  const fieldPattern = /([a-zA-Z_]\w*)\s*[=><]/g;
-  const matches = expression.match(fieldPattern);
+  // 修改正則表達式以匹配所有支援的型別
+  const fieldPattern = /([a-zA-Z_]\w*)\s*(?:[=!<>]=?|={2,3})\s*(?:\((\w+)\)|(-?\d+(?:\.\d+)?|true|false|["'].*?["']))/g;
+  const matches = expression.matchAll(fieldPattern);
 
   if (!matches) {
     return [];
   }
 
-  // 先去除運算符，再清理空白
-  const fields = matches.map(match => 
-    match.replace(/[=><]/g, "").trim()
-  );
+  const fields = Array.from(matches).map(match => {
+    const fieldName = match[1].trim();
+    let type: string;
+    
+    if (match[2]) {
+      // 處理明確指定型別的情況，如 field === (string)
+      type = match[2];
+    } else {
+      // 根據值推斷型別
+      const value = match[3];
+      if (value === 'true' || value === 'false') {
+        type = 'bool';
+      } else if (/^-?\d+(?:\.\d+)?$/.test(value)) {
+        type = 'number';
+      } else {
+        type = 'string';
+      }
+    }
+    
+    return `${fieldName} (${type})`;
+  });
 
   // 去重
   return Array.from(new Set(fields));

@@ -122,7 +122,7 @@ export default function CreateCircuit() {
       {/* Create Button */}
       <div className="mt-8 w-full">
         <button
-          onClick={() => {
+          onClick={async () => {
             const result = genCircuitData(
               circuitName,
               circuitDescription,
@@ -136,7 +136,7 @@ export default function CreateCircuit() {
 
             
             // @ts-ignore
-            const generatedCircom = genCircomCode(result);
+            const generatedCircom = await genCircomCode(result);
             console.log("---------------------------------------------");
             const hexString = Buffer.from(generatedCircom, "utf-8").toString("hex")
             console.log(Buffer.from(generatedCircom, "utf-8").toString("hex"));
