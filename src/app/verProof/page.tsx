@@ -119,6 +119,7 @@ export default function Home() {
             type="file"
             onChange={handleFileChange}
             accept=".json"
+            lang="en"
             className="file-input w-full bg-white mb-4 mt-auto input-bordered"
           />
           <button

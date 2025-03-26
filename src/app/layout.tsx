@@ -12,6 +12,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="cathay.png" />
+        <title>Cathay ZK</title>
+      </head>
       <body className="flex flex-col max-w-[80vw] mx-auto h-dvh pt-4 relative">
       <Toaster
         position="top-center"
