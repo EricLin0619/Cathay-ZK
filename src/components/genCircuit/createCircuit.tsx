@@ -3,6 +3,8 @@ import { useState, useEffect, Fragment } from "react";
 import { GroupConditions } from "@/interfaces/circuit";
 import { genCircuitData } from "@/utils/genCircuitData";
 import genCircomCode from "@/utils/genCircomCode";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function CreateCircuit() {
   const [groupConditionDisplay, setGroupConditionDisplay] = useState<
@@ -16,6 +18,7 @@ export default function CreateCircuit() {
   const [groupCondition_3, setGroupCondition_3] = useState<GroupConditions | undefined>();
   const [logicOperator_1, setLogicOperator_1] = useState<string>("");
   const [logicOperator_2, setLogicOperator_2] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   useEffect(() => {
     console.log(groupCondition_1, groupCondition_2, groupCondition_3);
@@ -45,6 +48,14 @@ export default function CreateCircuit() {
 
   return (
     <div className="flex-grow text-black pt-[140px] pb-6  mx-auto w-full">
+      {isLoading && (
+        <div className="fixed inset-0 bg-gray-800/75 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="flex flex-col items-center gap-3 p-4">
+            <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-500 rounded-full animate-spin"></div>
+            <p className="text-white font-medium">Creating circuit...</p>
+          </div>
+        </div>
+      )}
       {/* 表單區塊 */}
       <div className="bg-[#FFFAFA] p-8 rounded-lg custom-shadow mb-10 custom-border-radius">
         <div className="space-y-6">
@@ -120,7 +131,8 @@ export default function CreateCircuit() {
       {/* Create Button */}
       <div className="mt-8 w-full">
         <button
-          onClick={() => {
+          onClick={async () => {
+            setIsLoading(true)
             const result = genCircuitData(
               circuitName,
               circuitDescription,
@@ -131,10 +143,32 @@ export default function CreateCircuit() {
               logicOperator_2
             )
             console.log(result.logic);
+
+            
             // @ts-ignore
-            const generatedCircom = genCircomCode(result);
+            const generatedCircom = await genCircomCode(result);
             console.log("---------------------------------------------");
+            const hexString = Buffer.from(generatedCircom, "utf-8").toString("hex")
             console.log(Buffer.from(generatedCircom, "utf-8").toString("hex"));
+
+            const payload = {
+              name: circuitName,
+              description: circuitDescription,
+              circomHexString: hexString,
+              circuitLogic: result.logic
+            }
+            console.log("Payload:", payload)
+            axios.post("http://localhost:3001/circuit", payload)
+            .then(response => {
+              console.log("Response data:", response.data)
+              toast.success("Circuit generated successfully")
+              setIsLoading(false)
+            })
+            .catch(error => {
+              console.log('Error posting data:', error)
+              toast.error("Failed to generate circuit")
+              setIsLoading(false)
+            })
           }}
           className="btn w-full bg-white custom-shadow2 hover:bg-slate-500 hover:text-white text-gray-900 border-none"
         >

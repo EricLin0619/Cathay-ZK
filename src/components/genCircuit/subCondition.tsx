@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Condition } from "../../interfaces/circuit";
+const { buildPoseidon } = require('circomlibjs')
 
 // main component
 export default function SubCondition({
@@ -13,6 +14,7 @@ export default function SubCondition({
   const [value, setValue] = useState("");
 
   useEffect(() => {
+
     setCondition({inputValue: inputValue, comparator: comparator, value: value});
   }, [inputValue, comparator, value]);
   
@@ -69,6 +71,7 @@ const ComparatorSelector = ({setComparator}: {setComparator: (comparator: string
       <option>{`<(number)`}</option>
       <option>{`<=(number)`}</option>
       <option>{`==(string)`}</option>
+      <option>{`!=(string)`}</option>
       <option>{`==(bool)`}</option>
     </select>
   );

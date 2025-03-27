@@ -19,11 +19,11 @@ export default function Navbar() {
 
   useEffect(() => {
     if (pathname === '/') {
-      setActiveItem('創建證明');
+      setActiveItem('Create circuit');
     } else if (pathname === '/genProof') {
-      setActiveItem('生成證明');
+      setActiveItem('Generate ZKP');
     } else if (pathname === '/verifyProof') {
-      setActiveItem('驗證證明');
+      setActiveItem('Verify ZKP');
     }
   }, []);
 
@@ -34,15 +34,15 @@ export default function Navbar() {
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1 text-xl flex gap-4">
-          {['創建證明', '生成證明', '驗證證明'].map((item) => (
+          {['Create circuit', 'Generate ZKP', 'Verify ZKP'].map((item) => (
             <li key={item}>
               <Link
                 href={
-                  item === '創建證明' 
+                  item === 'Create circuit' 
                     ? '/' 
-                    : item === '生成證明' 
+                    : item === 'Generate ZKP' 
                       ? '/genProof' 
-                      : item === '驗證證明' 
+                      : item === 'Verify ZKP' 
                         ? '/verProof'
                         : `/${item.toLowerCase()}`
                 }

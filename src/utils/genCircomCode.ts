@@ -1,3 +1,5 @@
+const { buildPoseidon } = require('circomlibjs')
+
 // 定義基本條件的介面
 interface Condition {
   name: string;
@@ -37,32 +39,8 @@ interface ComparisonResult {
   outVar: string;
 }
 
-const circuits: Circuit = {
-  id: 1,
-  name: "circuit 1",
-  description: "Complex three-layer logic circuit example",
-  logic: {
-    operator: "or",
-    conditions: [
-      {
-        operator: "or",
-        conditions: [
-          { name: "credit_score", logic: ">", value: 700 },
-          { name: "", logic: "", value: "" },
-        ],
-      },
-      {
-        operator: "or",
-        conditions: [
-          { name: "age", logic: ">", value: 18 },
-        ],
-      },
-    ],
-  },
-};
-
-function generateCircomCode(circuit: Circuit): string {
-  let code = `pragma circom 2.0.0;\ninclude "/Users/eric/programming/typescript/zk_backend/node_modules/circomlib/circuits/comparators.circom";\n\n`;
+async function generateCircomCode(circuit: Circuit): Promise<string> {
+  let code = `pragma circom 2.0.0;\ninclude "/Users/eric/programming/typescript/zk_backend/circomlib/circuits/comparators.circom";\n\n`;
   
   code += `template ${circuit.name.replace(/\s+/g, '')} () {\n`;
   
@@ -80,7 +58,7 @@ function generateCircomCode(circuit: Circuit): string {
   };
   
   code += '\n    // 宣告中間變數和比較結果\n';
-  const { code: logicCode, finalVar } = processLogicGroup(circuit.logic, varCounter);
+  const { code: logicCode, finalVar } = await processLogicGroup(circuit.logic, varCounter);
   code += logicCode;
   
   code += '\n    // 宣告輸出信號\n';
@@ -93,7 +71,7 @@ function generateCircomCode(circuit: Circuit): string {
   return code;
 }
 
-function processLogicGroup(logic: LogicGroup, varCounter: VarCounter): LogicProcessResult {
+async function processLogicGroup(logic: LogicGroup, varCounter: VarCounter): Promise<LogicProcessResult> {
   let code = '';
   
   if (!logic.conditions || logic.conditions.length === 0) {
@@ -110,25 +88,27 @@ function processLogicGroup(logic: LogicGroup, varCounter: VarCounter): LogicProc
   }
   
   if (validConditions.every(c => 'name' in c)) {
-    const results = validConditions.map(condition => {
-      const { code: compCode, outVar } = generateComparison(condition as Condition, varCounter);
+    // 使用 Promise.all 處理多個異步操作
+    const results = await Promise.all(validConditions.map(async condition => {
+      const { code: compCode, outVar } = await generateComparison(condition as Condition, varCounter);
       code += compCode;
       return outVar;
-    });
+    }));
     
     const groupResult = `intermediate${varCounter.intermediate++}`;
     code += generateCombination(results, groupResult, logic.operator);
     return { code, finalVar: groupResult };
   }
   
+  // 處理子結果的異步操作
   const subResults: string[] = [];
   for (const condition of validConditions) {
     if ('name' in condition) {
-      const { code: compCode, outVar } = generateComparison(condition as Condition, varCounter);
+      const { code: compCode, outVar } = await generateComparison(condition as Condition, varCounter);
       code += compCode;
       subResults.push(outVar);
     } else {
-      const { code: subCode, finalVar } = processLogicGroup(condition as LogicGroup, varCounter);
+      const { code: subCode, finalVar } = await processLogicGroup(condition as LogicGroup, varCounter);
       code += subCode;
       if (finalVar !== '0') {  // 只有當子群組有有效結果時才加入
         subResults.push(finalVar);
@@ -142,11 +122,10 @@ function processLogicGroup(logic: LogicGroup, varCounter: VarCounter): LogicProc
   
   const finalVar = `intermediate${varCounter.intermediate++}`;
   code += generateCombination(subResults, finalVar, logic.operator);
-  
   return { code, finalVar };
 }
 
-function generateComparison(condition: Condition, varCounter: VarCounter): ComparisonResult {
+async function generateComparison(condition: Condition, varCounter: VarCounter): Promise<ComparisonResult> {
   const compName = `comp${varCounter.comp++}`;
   const outVar = `${compName}_out`;
   
@@ -178,10 +157,28 @@ function generateComparison(condition: Condition, varCounter: VarCounter): Compa
     code += `    ${compName}.in[0] <== ${condition.name};\n`;
     code += `    ${compName}.in[1] <== ${condition.value};\n`;
   } else if (condition.logic === "==(string)") {
+    let value = condition.value as string
+    const poseidon = await buildPoseidon();
+    const hexWithPrefix = "0x" + value.split('')
+            .map(char => char.charCodeAt(0).toString(16))
+            .join('');
+    const poseidonHash = poseidon.F.toString(poseidon([hexWithPrefix])); 
+
     code += `    component ${compName} = IsEqualString();\n`;
     code += `    ${compName}.in[0] <== ${condition.name};\n`;
-    code += `    ${compName}.in[1] <== ${condition.value};\n`;
-  } else if (condition.logic === "==(bool)") {
+    code += `    ${compName}.in[1] <== ${poseidonHash};\n`;
+  } else if (condition.logic === "!=(string)") {
+    let value = condition.value as string
+    const poseidon = await buildPoseidon();
+    const hexWithPrefix = "0x" + value.split('')
+            .map(char => char.charCodeAt(0).toString(16))
+            .join('');
+    const poseidonHash = poseidon.F.toString(poseidon([hexWithPrefix])); 
+
+    code += `    component ${compName} = IsNotEqualString();\n`;
+    code += `    ${compName}.in[0] <== ${condition.name};\n`;
+    code += `    ${compName}.in[1] <== ${poseidonHash};\n`;
+  }else if (condition.logic === "==(bool)") {
     code += `    component ${compName} = IsEqual();\n`;
     code += `    ${compName}.in[0] <== ${condition.name};\n`;
     code += `    ${compName}.in[1] <== ${condition.value};\n`;
@@ -231,7 +228,5 @@ function collectInputs(logic: LogicGroup, inputs: Set<string>): void {
   }
 }
 
-const generatedCircom = generateCircomCode(circuits);
-console.log(generatedCircom);
 
 export default generateCircomCode;

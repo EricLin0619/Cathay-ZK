@@ -1,9 +1,68 @@
 "use client";
 import React, { useState } from "react";
-import circuits from "@testData/data";
+import axios from "axios";
+import { useEffect } from "react";
+import { Circuit } from "@/type/circuit";
+import { parseCondition } from "@/utils/parseCondition";
+import toast from "react-hot-toast";
 
 export default function Home() {
   const [selectedCircuit, setSelectedCircuit] = useState<number | null>(1);
+  const [circuits, setCircuits] = useState<Circuit[]>([]);
+  const [proofData, setProofData] = useState<{
+    a: string[];
+    b: [string[], string[]];
+    c: string[];
+  } | null>(null);
+
+  useEffect(() => {
+    axios.get("http://localhost:3001/circuit").then((response) => {
+      console.log(response.data);
+      setCircuits(response.data);
+    });
+  }, []);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const jsonData = JSON.parse(e.target?.result as string);
+          setProofData(jsonData);
+          console.log("Loaded proof data:", jsonData);
+        } catch (error) {
+          console.error("Error parsing JSON file:", error);
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
+
+  const handleVer = () => {
+    if (!proofData) {
+      console.error("No proof data loaded");
+      return;
+    }
+    axios
+      .post(
+        `http://localhost:3001/circuit/verify/${selectedCircuit}`,
+        proofData
+      )
+      .then((response) => {
+        console.log(response.data);
+        if (response.data == true) {
+          toast.success('Successfully verified')
+        }
+        else {
+          toast.error('Verification failed')
+        }
+        
+      })
+      .catch((error) => {
+        console.log("Error message:", error);
+      });
+  };
 
   // 找到選中的 circuit
   const selectedCircuitData = circuits.find(
@@ -18,7 +77,9 @@ export default function Home() {
             {circuits.map((circuit, index) => (
               <div
                 key={circuit.id}
-                className={`h-[60px] ${index === circuits.length - 1 ? "" : "mb-4"} flex items-center justify-center custom-border-radius cursor-pointer transition-colors duration-200
+                className={`h-[60px] ${
+                  index === circuits.length - 1 ? "" : "mb-4"
+                } flex items-center justify-center custom-border-radius cursor-pointer transition-colors duration-200
                     ${
                       selectedCircuit === circuit.id
                         ? "bg-slate-500 text-white"
@@ -41,20 +102,32 @@ export default function Home() {
                 <span className="mb-4 text-xl font-bold">Description:</span>
                 <p className="mt-2 mb-4">{selectedCircuitData.description}</p>
                 <h3 className="text-xl font-semibold mb-2">Condition:</h3>
-                <ul className="list-disc pl-5">
+                <p>{parseCondition(selectedCircuitData.circuit_logic)}</p>
+                {/* <ul className="list-disc pl-5">
                   {selectedCircuitData.conditions.map((condition, index) => (
                     <li key={index} className="mb-2">
                       {condition.name} {condition.logic} {condition.value}
                     </li>
                   ))}
-                </ul>
+                </ul> */}
               </div>
             </>
           ) : (
             <p>請選擇一個電路</p>
           )}
-          <input type="file" className="file-input w-full bg-white mb-4 mt-auto input-bordered" />
-          <button className="btn bg-slate-600 text-white border-none hover:bg-slate-700">Verify Proof</button>
+          <input
+            type="file"
+            onChange={handleFileChange}
+            accept=".json"
+            lang="en"
+            className="file-input w-full bg-white mb-4 mt-auto input-bordered"
+          />
+          <button
+            className="btn bg-slate-600 text-white border-none hover:bg-slate-700"
+            onClick={handleVer}
+          >
+            Verify Proof
+          </button>
         </div>
       </div>
     </div>
