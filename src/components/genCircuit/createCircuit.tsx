@@ -158,7 +158,7 @@ export default function CreateCircuit() {
               circuitLogic: result.logic
             }
             console.log("Payload:", payload)
-            axios.post("http://localhost:3001/circuit", payload)
+            axios.post(`${process.env.NEXT_PUBLIC_BACKEND_PATH}/circuit`, payload)
             .then(response => {
               console.log("Response data:", response.data)
               toast.success("Circuit generated successfully")

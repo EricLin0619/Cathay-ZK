@@ -13,7 +13,7 @@ export default function Home() {
   const [inputValues, setInputValues] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
-    axios.get("http://localhost:3001/circuit")
+    axios.get(`${process.env.NEXT_PUBLIC_BACKEND_PATH}/circuit`)
     .then(response => {
       console.log(response.data)
       setCircuits(response.data)
@@ -48,11 +48,12 @@ export default function Home() {
 
       // 根據類型轉換值
       let convertedValue = value as string | number;
-      if (fieldType === 'number') {
+      if (fieldType === 'number' || fieldType === 'bool') {
         convertedValue = Number(value);
-      } else if (fieldType === 'bool') {
-        convertedValue = value === '1' || value === '1' ? 1 : 0;
-      }
+      } 
+      // else if (fieldType === 'bool') {
+      //   convertedValue = value === '1' || value === '1' ? 1 : 0;
+      // }
       // string 類型保持原樣
 
       acc[fieldName.trim()] = convertedValue;
@@ -60,7 +61,7 @@ export default function Home() {
     }, {} as { [key: string]: string | number | boolean });
     console.log(numberInputs)
 
-    axios.post(`http://localhost:3001/circuit/get-proof/${selectedCircuit}`, {
+    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_PATH}/circuit/get-proof/${selectedCircuit}`, {
       inputs: numberInputs
     })
     .then(response => {

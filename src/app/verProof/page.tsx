@@ -16,7 +16,7 @@ export default function Home() {
   } | null>(null);
 
   useEffect(() => {
-    axios.get("http://localhost:3001/circuit").then((response) => {
+    axios.get(`${process.env.NEXT_PUBLIC_BACKEND_PATH}/circuit`).then((response) => {
       console.log(response.data);
       setCircuits(response.data);
     });
@@ -46,7 +46,7 @@ export default function Home() {
     }
     axios
       .post(
-        `http://localhost:3001/circuit/verify/${selectedCircuit}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_PATH}/circuit/verify/${selectedCircuit}`,
         proofData
       )
       .then((response) => {

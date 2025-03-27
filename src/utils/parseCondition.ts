@@ -36,8 +36,10 @@ export function parseCondition(condition: ConditionGroup | Condition): string {
 }
 
 export function extractFields(expression: string): string[] {
-  // 修改正則表達式以匹配所有支援的型別
-  const fieldPattern = /([a-zA-Z_]\w*)\s*(?:[=!<>]=?|={2,3})\s*(?:\((\w+)\)|(-?\d+(?:\.\d+)?|true|false|["'].*?["']))/g;
+  // 使用正則表達式提取input 欄位
+  const fieldPattern = /([a-zA-Z_\u4e00-\u9fa5][\w\u4e00-\u9fa5]*)\s*(?:[=!<>]=?|={2,3})\s*(?:\((\w+)\)|(-?\d+(?:\.\d+)?|true|false|["'].*?["']))/g;
+  // 修改了字段名稱的匹配部分，現在可以匹配多個中文字符
+
   const matches = expression.matchAll(fieldPattern);
 
   if (!matches) {
@@ -49,10 +51,8 @@ export function extractFields(expression: string): string[] {
     let type: string;
     
     if (match[2]) {
-      // 處理明確指定型別的情況，如 field === (string)
       type = match[2];
     } else {
-      // 根據值推斷型別
       const value = match[3];
       if (value === 'true' || value === 'false') {
         type = 'bool';
@@ -66,7 +66,6 @@ export function extractFields(expression: string): string[] {
     return `${fieldName} (${type})`;
   });
 
-  // 去重
   return Array.from(new Set(fields));
 }
 

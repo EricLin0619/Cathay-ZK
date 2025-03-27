@@ -1,4 +1,8 @@
+import { createHash } from 'crypto';
 const { buildPoseidon } = require('circomlibjs')
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 
 // 定義基本條件的介面
 interface Condition {
@@ -39,8 +43,29 @@ interface ComparisonResult {
   outVar: string;
 }
 
+function generateHashName(chineseStr: string): string {
+  // 使用 MD5 hash（也可以用其他算法如 SHA-1, SHA-256 等）
+  const hash = createHash('md5')
+    .update(chineseStr)
+    .digest('hex')
+    .substring(0, 8); // 取前8位即可
+    
+  // 加上前綴 'v' 確保變數名以字母開頭
+  const varName = `v${hash}`;
+  // console.log(`中文: ${chineseStr} -> 變數名: ${varName}`);
+  return varName;
+}
+
+function stringToHex(str: string) {
+  const strBytes = new TextEncoder().encode(str);
+  const strHex = Array.from(strBytes)
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+  return `0x${strHex}`
+}
+
 async function generateCircomCode(circuit: Circuit): Promise<string> {
-  let code = `pragma circom 2.0.0;\ninclude "/Users/eric/programming/typescript/zk_backend/circomlib/circuits/comparators.circom";\n\n`;
+  let code = `pragma circom 2.0.0;\ninclude "${process.env.NEXT_PUBLIC_CIRCOMLIB_PATH}";\n\n`;
   
   code += `template ${circuit.name.replace(/\s+/g, '')} () {\n`;
   
@@ -49,7 +74,7 @@ async function generateCircomCode(circuit: Circuit): Promise<string> {
   
   code += '    // 宣告輸入信號\n';
   inputs.forEach(input => {
-    if (input) code += `    signal input ${input};\n`;
+    if (input) code += `    signal input ${generateHashName(input)};\n`;
   });
   
   const varCounter: VarCounter = {
@@ -132,55 +157,56 @@ async function generateComparison(condition: Condition, varCounter: VarCounter):
   let code = `    // 比較 ${condition.name} ${condition.logic} ${condition.value}\n`;
   code += `    signal ${outVar};\n`;
   
+  // transform input field to md5 hash with v prefix
+  const inputName = generateHashName(condition.name)
+  
   if (condition.logic === "=(number)" || condition.logic === "===") {
     code += `    component ${compName} = IsEqual();\n`;
-    code += `    ${compName}.in[0] <== ${condition.name};\n`;
+    code += `    ${compName}.in[0] <== ${inputName};\n`;
     code += `    ${compName}.in[1] <== ${condition.value};\n`;
   } else if (condition.logic === "!=(number)" || condition.logic === "!==") {
     code += `    component ${compName} = IsNotEqual();\n`;
-    code += `    ${compName}.in[0] <== ${condition.name};\n`;
+    code += `    ${compName}.in[0] <== ${inputName};\n`;
     code += `    ${compName}.in[1] <== ${condition.value};\n`;
   } else if (condition.logic === ">(number)") {
     code += `    component ${compName} = GreaterThan(32);\n`;
-    code += `    ${compName}.in[0] <== ${condition.name};\n`;
+    code += `    ${compName}.in[0] <== ${inputName};\n`;
     code += `    ${compName}.in[1] <== ${condition.value};\n`;
   } else if (condition.logic === ">=(number)") {
     code += `    component ${compName} = GreaterEqThan(32);\n`;
-    code += `    ${compName}.in[0] <== ${condition.name};\n`;
+    code += `    ${compName}.in[0] <== ${inputName};\n`;
     code += `    ${compName}.in[1] <== ${condition.value};\n`;
   } else if (condition.logic === "<(number)") {
     code += `    component ${compName} = LessThan(32);\n`;
-    code += `    ${compName}.in[0] <== ${condition.name};\n`;
+    code += `    ${compName}.in[0] <== ${inputName};\n`;
     code += `    ${compName}.in[1] <== ${condition.value};\n`;
   } else if (condition.logic === "<=(number)") {
     code += `    component ${compName} = LessEqThan(32);\n`;
-    code += `    ${compName}.in[0] <== ${condition.name};\n`;
+    code += `    ${compName}.in[0] <== ${inputName};\n`;
     code += `    ${compName}.in[1] <== ${condition.value};\n`;
   } else if (condition.logic === "==(string)") {
+    // transform value to poseidon hash string
     let value = condition.value as string
     const poseidon = await buildPoseidon();
-    const hexWithPrefix = "0x" + value.split('')
-            .map(char => char.charCodeAt(0).toString(16))
-            .join('');
+    const hexWithPrefix = stringToHex(value)
     const poseidonHash = poseidon.F.toString(poseidon([hexWithPrefix])); 
 
     code += `    component ${compName} = IsEqualString();\n`;
-    code += `    ${compName}.in[0] <== ${condition.name};\n`;
+    code += `    ${compName}.in[0] <== ${inputName};\n`;
     code += `    ${compName}.in[1] <== ${poseidonHash};\n`;
   } else if (condition.logic === "!=(string)") {
+    // transform value to poseidon hash string
     let value = condition.value as string
     const poseidon = await buildPoseidon();
-    const hexWithPrefix = "0x" + value.split('')
-            .map(char => char.charCodeAt(0).toString(16))
-            .join('');
+    const hexWithPrefix = stringToHex(value)
     const poseidonHash = poseidon.F.toString(poseidon([hexWithPrefix])); 
 
     code += `    component ${compName} = IsNotEqualString();\n`;
-    code += `    ${compName}.in[0] <== ${condition.name};\n`;
+    code += `    ${compName}.in[0] <== ${inputName};\n`;
     code += `    ${compName}.in[1] <== ${poseidonHash};\n`;
   }else if (condition.logic === "==(bool)") {
     code += `    component ${compName} = IsEqual();\n`;
-    code += `    ${compName}.in[0] <== ${condition.name};\n`;
+    code += `    ${compName}.in[0] <== ${inputName};\n`;
     code += `    ${compName}.in[1] <== ${condition.value};\n`;
   }
 
