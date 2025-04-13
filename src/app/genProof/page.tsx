@@ -41,25 +41,35 @@ export default function Home() {
   };
 
   const handleGen = () => {
+    // 先檢查所有輸入值
+    const hasEmptyValues = Object.values(inputValues).some(value => 
+      !value
+      // value === undefined || value === null || value.trim() === ''
+    );
+
+    if (hasEmptyValues) {
+      toast.error('Missing required field');
+      return;
+    }
+
     const numberInputs = Object.entries(inputValues).reduce((acc, [key, value]) => {
       // 解析字段名和類型
       const [fieldName, type] = key.split(' (');
       const fieldType = type?.replace(')', '');  // 移除結尾括號
 
       // 根據類型轉換值
-      let convertedValue = value as string | number;
+      let convertedValue: string | number = value;
       if (fieldType === 'number' || fieldType === 'bool') {
-        convertedValue = Number(value);
-      } 
-      // else if (fieldType === 'bool') {
-      //   convertedValue = value === '1' || value === '1' ? 1 : 0;
-      // }
-      // string 類型保持原樣
+        // 檢查是否為有效數字
+        const numberValue = Number(value);
+        if (!isNaN(numberValue)) {
+          convertedValue = numberValue;
+        }
+      }
 
       acc[fieldName.trim()] = convertedValue;
       return acc;
     }, {} as { [key: string]: string | number | boolean });
-    console.log(numberInputs)
 
     axios.post(`${process.env.NEXT_PUBLIC_BACKEND_PATH}/circuit/get-proof/${selectedCircuit}`, {
       inputs: numberInputs
@@ -87,8 +97,15 @@ export default function Home() {
       console.log(response.data);
     })
     .catch(error => {
-      console.log("Error message:", error);
-      toast.error("Failed to generate proof")
+      if (error.response) {
+        // 獲取後端返回的錯誤訊息
+        console.log("Error details:", error.response.data);
+        toast.error(error.response.data.message || error.response.data);
+      } else {
+        // 如果不是 HTTP 響應錯誤（比如網絡錯誤）
+        console.log("Error message:", error.message);
+        toast.error(error.message);
+      }
     });
   }
 
